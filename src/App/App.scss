@@ -4,3 +4,12 @@
     margin: 0;
     padding: 0;
 }
+
+tbody th:not(:first-child) {
+    font-weight: normal!important;
+}
+
+html {
+    margin-left: calc(100vw - 100%);
+    margin-right: 0;
+  }
