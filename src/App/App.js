@@ -1,12 +1,20 @@
 import React from 'react';
 import './App.scss';
 
-function App() {
-  return (
-    <div className="App">
-      
-    </div>
-  );
-}
+import Navigation from '../Components/Navigation';
 
-export default App;
+export default class extends React.Component {
+  state = {
+    smallData: true,
+    loading: false  
+  };
+
+  render() {
+    return (
+      <>
+      <Navigation />
+
+      </>
+    );
+  }
+}

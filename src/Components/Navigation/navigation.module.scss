@@ -1,0 +1,18 @@
+.nav {
+    padding-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__data {
+        ul {
+            list-style: none;
+            display: flex;
+            margin-bottom: 0;
+
+            li:not(:last-child) {
+                margin-right: 10px;
+            }
+        }
+    }
+}
