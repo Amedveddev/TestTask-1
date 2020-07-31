@@ -4,23 +4,33 @@ import './App.scss';
 import Navigation from '../Components/Navigation';
 import Users from '../Components/Users';
 
-export default class extends React.Component {
+export default class extends React.PureComponent {
   state = {
     smallData: true,
-    loading: true  
+    loading: null  
   };
 
-  changeLoading = () =>{
-    const loading = !this.state.loading;
+  changeLoading = value =>{
+    const loading = value;
     this.setState({
       loading
+    });
+  }
+
+  changeDataType = () =>{
+    const smallData = !this.state.smallData;
+    this.setState({
+      smallData
     });
   }
 
   render() {
     return (
       <>
-        <Navigation dataType={this.state.smallData} />
+        <Navigation
+        loading={this.state.loading}
+        changeDataType={this.changeDataType} 
+        dataType={this.state.smallData} />
         <Users
         changeLoading={this.changeLoading}
         loading={this.state.loading} 

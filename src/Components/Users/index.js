@@ -2,8 +2,10 @@ import React from 'react';
 import styles from './users.module.scss';
 
 import {getData} from '../../Api/getData';
+import {scroller} from 'react-scroll';
 
 import Table from './table';
+import UserInfo from './UserInfo';
 
 const loadingSpinners = <div className={styles.load}>
 <div className="spinner-border text-primary" role="status">
@@ -32,21 +34,42 @@ const loadingSpinners = <div className={styles.load}>
 </div>
 </div>;
 
-export default class extends React.PureComponent {
+export default class extends React.Component {
     state = {
         data: [],
         paginationData: [],
         count: 50,
         flp: true,
-        fln: false
+        fln: false,
+        activeLine: false,
+        user: null
     };
 
     componentDidMount() {
-        this.loadData();
+        this.loadData(this.props.dataType);
     }
 
-    loadData() {
-        getData(this.props.dataType).then(res=>{
+    shouldComponentUpdate(nextProps, nextState){
+        if (this.props.dataType !== nextProps.dataType) {
+            this.loadData(nextProps.dataType);
+        }  
+        
+        return true;
+    }
+
+    get UsersMap() {
+        const map = {};
+
+        this.state.data.forEach( (pr,i)=> {
+            map[pr.id.toString()] = i
+        });
+
+        return map;
+    }
+
+    loadData(type = false) {
+        this.props.changeLoading(true);
+        getData(type).then(res=>{
             let data = res;
             if (res.length >= 50) {
                 data = res.slice(0, 50);
@@ -54,8 +77,9 @@ export default class extends React.PureComponent {
             this.setState({
                 data,
                 paginationData: res
+            }, ()=>{
+                this.props.changeLoading(false);
             });
-            this.props.changeLoading();
         })
         .catch(err=>{
             console.log(err);
@@ -102,6 +126,22 @@ export default class extends React.PureComponent {
         });
     }
 
+    chooseUser = e =>{
+        const id = e.target.parentElement.firstChild.innerHTML;
+        const user = this.state.data[ this.UsersMap[id] ];
+
+        this.setState({
+            user,
+            activeLine: true
+        }, ()=>{
+            scroller.scrollTo('userInfo', {
+                duration: 1500,
+                delay: 100,
+                smooth: true
+              });
+        });
+    }
+
     render() {
         const pagination = <div className={`conteiner ${styles.pag}`}>
             <button disabled={this.state.flp} onClick={this.prev} className="btn btn-outline-info">Назад</button>
@@ -111,8 +151,9 @@ export default class extends React.PureComponent {
         return(
             <>
                 {this.props.loading ? loadingSpinners : ''}
-                {this.props.loading ? '' : <Table users={this.state.data}/>}
+                {this.props.loading ? '' : <Table chooseUser={this.chooseUser} users={this.state.data}/>}
                 {this.state.data.length >=50 ? pagination : ''}
+                {this.state.activeLine && !this.props.loading ? <UserInfo user={this.state.user}/> : ''}
             </>
         );
     }

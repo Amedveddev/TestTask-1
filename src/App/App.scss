@@ -3,6 +3,7 @@
 *::before {
     margin: 0;
     padding: 0;
+    box-sizing: border-box!important;
 }
 
 tbody th:not(:first-child) {
@@ -12,4 +13,16 @@ tbody th:not(:first-child) {
 html {
     margin-left: calc(100vw - 100%);
     margin-right: 0;
-  }
+}
+
+#userInfo {
+    textarea {
+        width: 50%;
+        height: 100px;
+        resize: none;
+    }
+}
+
+tbody tr {
+    cursor: pointer;
+}

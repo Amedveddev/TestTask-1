@@ -7,7 +7,7 @@ export default class extends React.Component {
 
     render() {
         const users = this.props.users.map( (el,i)=>{
-            return <tr key={this.hashCode(el.id+el.firstName)}>
+            return <tr key={this.hashCode(el.id+el.firstName)} data-id={el.id}>
                 <th scope="row">{el.id}</th>
                 <th>{el.firstName}</th>
                 <th>{el.lastName}</th>
@@ -17,7 +17,7 @@ export default class extends React.Component {
         });
 
         return(
-            <table className="table container-fluid">
+            <table className="table table-hover container-fluid">
                 <thead>
                     <tr>
                     <th scope="col">ID</th>
@@ -27,7 +27,7 @@ export default class extends React.Component {
                     <th scope="col">Phone</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody onClick={this.props.chooseUser}>
                     {users}
                 </tbody>
             </table>
