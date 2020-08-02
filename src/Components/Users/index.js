@@ -37,12 +37,14 @@ const loadingSpinners = <div className={styles.load}>
 export default class extends React.Component {
     state = {
         data: [],
+        searchData: null,
         paginationData: [],
         count: 50,
         flp: true,
         fln: false,
         activeLine: false,
-        user: null
+        user: null,
+        sort: 'asc'
     };
 
     componentDidMount() {
@@ -53,6 +55,14 @@ export default class extends React.Component {
         if (this.props.dataType !== nextProps.dataType) {
             this.loadData(nextProps.dataType);
         }  
+
+        if (this.props.newUser !== nextProps.newUser) {
+            this.addUser(nextProps.newUser);
+        }
+
+        if (this.props.searchText !== nextProps.searchText) {
+            this.filter(nextProps.searchText)
+        }
         
         return true;
     }
@@ -76,6 +86,7 @@ export default class extends React.Component {
             }
             this.setState({
                 data,
+                searchData: res,
                 paginationData: res
             }, ()=>{
                 this.props.changeLoading(false);
@@ -101,6 +112,7 @@ export default class extends React.Component {
 
         this.setState({
             data,
+            searchData: data,
             flp,
             count,
             fln: false
@@ -120,6 +132,7 @@ export default class extends React.Component {
 
         this.setState({
             data,
+            searchData: data,
             fln,
             count,
             flp: false
@@ -142,6 +155,68 @@ export default class extends React.Component {
         });
     }
 
+    sort = key =>{
+        const data = [...this.state.data];
+        let field;
+        let sort;
+
+        switch (key) {
+            case 'ID':
+                field = 'id';
+                break;
+            case 'First name':
+                field = 'firstName';
+                break;
+            case 'Last name':
+                field = 'lastName';
+                break;
+            case 'Email':
+                field = 'email';
+                break;
+            case 'Phone':
+                field = 'phone';
+                break;
+            default:
+                break;
+        }
+
+        if (this.state.sort === 'asc') {
+            data.sort((a, b) => a[field] > b[field] ? 1 : -1);
+            sort = 'desc';
+        }
+        else {
+            data.sort((a, b) => a[field] < b[field] ? 1 : -1);
+            sort = 'asc';
+        }
+
+        this.setState({
+            data,
+            sort
+        });
+    }
+
+    addUser(user) {
+        const data = [...this.state.data];
+
+        data.unshift(user);
+
+        this.setState({
+            data
+        }, ()=>{
+            this.props.hideForm();
+        });
+    }
+
+    filter(text) {
+        let data = [...this.state.searchData];
+
+        data = data.filter(el=>(el.id+' '+el.firstName+' '+el.lastName+' '+el.email+' '+el.phone).includes(text));
+
+        this.setState({
+            data
+        });
+    }
+
     render() {
         const pagination = <div className={`conteiner ${styles.pag}`}>
             <button disabled={this.state.flp} onClick={this.prev} className="btn btn-outline-info">Назад</button>
@@ -151,7 +226,8 @@ export default class extends React.Component {
         return(
             <>
                 {this.props.loading ? loadingSpinners : ''}
-                {this.props.loading ? '' : <Table chooseUser={this.chooseUser} users={this.state.data}/>}
+                {this.props.loading ? '' : 
+                <Table sort={this.sort} sortType={this.state.sort} chooseUser={this.chooseUser} users={this.state.data}/>}
                 {this.state.data.length >=50 ? pagination : ''}
                 {this.state.activeLine && !this.props.loading ? <UserInfo user={this.state.user}/> : ''}
             </>

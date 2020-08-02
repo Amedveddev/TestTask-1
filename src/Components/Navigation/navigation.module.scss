@@ -18,4 +18,26 @@
             }
         }
     }
+
+    &__filter {
+        label {
+            margin-right: 10px;
+        }
+
+        input {
+            outline: none;
+            border: none;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+
+            &:focus,
+            &:active {
+                border-bottom: 2px solid rgba(0, 0, 0, 1);
+
+                &::placeholder {
+                    transition: opacity .2s;
+                    opacity: 0;
+                }
+            }
+        }
+    }
 }

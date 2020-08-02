@@ -2,6 +2,10 @@ import React from 'react';
 import styles from './navigation.module.scss';
 
 export default class extends React.PureComponent {
+    state = {
+        search: ''
+    };
+
     changeDataType = e => {
         if (!e.target.classList.contains('active')) {
             this.props.changeDataType();
@@ -23,10 +27,10 @@ export default class extends React.PureComponent {
                 </div>
                 <div className={styles.nav__filter}>
                     <label htmlFor="filter">Поиск записи </label> 
-                    <input disabled={this.props.loading} id="filter" type="text"/>
+                    <input onChange={this.props.search} placeholder="Search" value={this.props.searchText} disabled={this.props.loading} id="filter" type="text"/>
                 </div>
                 <div className={styles.nav__add}>
-                    <button disabled={this.props.loading} className="btn btn-outline-primary">Добавить</button>
+                    <button onClick={this.props.addUser} disabled={this.props.loading} className="btn btn-outline-primary">Добавить</button>
                 </div>
             </nav>
         );
